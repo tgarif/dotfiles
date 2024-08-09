@@ -3,6 +3,7 @@ return {
   dependencies = {
     "williamboman/mason-lspconfig.nvim",
     "WhoIsSethDaniel/mason-tool-installer.nvim",
+    "mfussenegger/nvim-lint",
   },
   config = function()
     -- import mason
@@ -38,6 +39,7 @@ return {
         "emmet_ls",
         "prismals",
         "rust_analyzer",
+        "gopls",
       },
       -- auto-install configured servers (with lspconfig)
       automatic_installation = true, -- not the same as ensure_installed
@@ -48,6 +50,12 @@ return {
         "prettier", -- prettier formatter
         "stylua", -- lua formatter
         "eslint_d", -- js linter
+        "gofumpt",
+        "goimports",
+        "golines",
+        "gopls",
+        "golangci-lint",
+        "golangci-lint-langserver",
       },
     })
   end,

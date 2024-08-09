@@ -1,5 +1,6 @@
 return {
   "stevearc/conform.nvim",
+  version = "v5.3.0",
   lazy = true,
   event = { "BufReadPre", "BufNewFile" }, -- to disable, comment this out
   config = function()
@@ -19,6 +20,7 @@ return {
         markdown = { "prettier" },
         graphql = { "prettier" },
         lua = { "stylua" },
+        go = { "goimports" },
       },
       -- format_on_save = {
       --   lsp_fallback = true,

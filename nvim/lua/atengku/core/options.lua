@@ -12,6 +12,9 @@ opt.shiftwidth = 2
 opt.expandtab = true
 opt.autoindent = true
 
+-- Minimal number of screen lines to keep above and below the cursor.
+opt.scrolloff = 10
+
 -- line wrapping
 opt.wrap = false
 

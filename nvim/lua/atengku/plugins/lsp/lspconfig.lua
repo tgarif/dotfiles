@@ -146,6 +146,19 @@ return {
           filetypes = { "c", "cpp" },
         })
       end,
+      ["gopls"] = function()
+        lspconfig["gopls"].setup({
+          filetypes = { "go", "gomod", "gowork", "gotmpl" },
+          settings = {
+            env = {
+              GOEXPERIMENT = "rangefunc",
+            },
+            formatting = {
+              gofumpt = true,
+            },
+          },
+        })
+      end,
     })
   end,
 }
