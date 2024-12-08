@@ -7,13 +7,16 @@ opt.relativenumber = true
 opt.number = true
 
 -- tabs & indentation
-opt.tabstop = 2
-opt.shiftwidth = 2
+opt.tabstop = 4
+opt.softtabstop = 4
+opt.shiftwidth = 4
 opt.expandtab = true
 opt.autoindent = true
 
+opt.smartindent = true
+
 -- Minimal number of screen lines to keep above and below the cursor.
-opt.scrolloff = 10
+opt.scrolloff = 8
 
 -- line wrapping
 opt.wrap = false
@@ -41,3 +44,4 @@ opt.splitright = true
 opt.splitbelow = true
 
 opt.swapfile = false
+opt.updatetime = 50

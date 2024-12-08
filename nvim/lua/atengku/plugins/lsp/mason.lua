@@ -29,7 +29,6 @@ return {
       -- list of servers for mason to install
       ensure_installed = {
         "clangd",
-        "tsserver",
         "html",
         "cssls",
         "tailwindcss",
@@ -56,6 +55,7 @@ return {
         "gopls",
         "golangci-lint",
         "golangci-lint-langserver",
+        "clang-format",
       },
     })
   end,

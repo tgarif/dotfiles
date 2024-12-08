@@ -1,18 +1,21 @@
 return {
   "stevearc/conform.nvim",
-  version = "v5.3.0",
   lazy = true,
   event = { "BufReadPre", "BufNewFile" }, -- to disable, comment this out
   config = function()
     local conform = require("conform")
 
     conform.setup({
+      root_dir = require("conform.util").root_file({
+        ".editorconfig",
+        "package.json",
+        ".git",
+      }),
       formatters_by_ft = {
         javascript = { "prettier" },
         typescript = { "prettier" },
         javascriptreact = { "prettier" },
         typescriptreact = { "prettier" },
-        svelte = { "prettier" },
         css = { "prettier" },
         html = { "prettier" },
         json = { "prettier" },
@@ -20,7 +23,8 @@ return {
         markdown = { "prettier" },
         graphql = { "prettier" },
         lua = { "stylua" },
-        go = { "goimports" },
+        go = { "gofmt" },
+        c = { "clang-format" },
       },
       -- format_on_save = {
       --   lsp_fallback = true,
@@ -38,6 +42,16 @@ return {
           timeout_ms = 1000,
         }
       end,
+      formatters = {
+        stylua = {
+          command = "stylua",
+          args = { "--search-parent-directories", "--stdin-filepath", "$FILENAME", "-" },
+        },
+        prettier = {
+          command = "prettier",
+          args = { "--stdin-filepath", "$FILENAME" },
+        },
+      },
     })
 
     vim.api.nvim_create_user_command("FormatDisable", function(args)
