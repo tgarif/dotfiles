@@ -45,3 +45,15 @@ opt.splitbelow = true
 
 opt.swapfile = false
 opt.updatetime = 50
+
+-- Lua-specific settings
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "lua",
+  callback = function()
+    local opt_local = vim.opt_local -- scoped to the current buffer
+    opt_local.tabstop = 2
+    opt_local.shiftwidth = 2
+    opt_local.softtabstop = 2
+    opt_local.expandtab = true
+  end,
+})
