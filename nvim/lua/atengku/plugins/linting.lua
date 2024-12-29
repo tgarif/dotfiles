@@ -5,17 +5,20 @@ return {
   config = function()
     local lint = require("lint")
 
-    -- local eslint_d = lint.linters.eslint_d
-    -- eslint_d.args = {
-    --   "--no-warn-ignored",
-    --   "--format",
-    --   "json",
-    --   "--stdin",
-    --   "--stdin-filename",
-    --   function()
-    --     return vim.api.nvim_buf_get_name(0)
-    --   end,
-    -- }
+    local eslint_d = lint.linters.eslint_d
+    eslint_d.args = {
+      "--no-warn-ignored",
+      "--format",
+      "json",
+      "--stdin",
+      "--stdin-filename",
+      function()
+        return vim.api.nvim_buf_get_name(0)
+      end,
+    }
+    eslint_d.cwd = function()
+      return vim.fn.getcwd() -- Use the current working directory
+    end
 
     -- Custom definition for golangci-lint
     lint.linters.golangci_lint = {

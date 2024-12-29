@@ -1,7 +1,6 @@
 vim.g.mapleader = " "
 
 local keymap = vim.keymap -- for conciseness
-local api = vim.api -- for conciseness
 
 -- general keymaps
 
@@ -37,3 +36,9 @@ keymap.set("n", "<leader>tp", "<cmd>tabp<CR>", { desc = "Go to previous tab" }) 
 keymap.set("n", "<leader>tf", "<cmd>tabnew %<CR>", { desc = "Open current buffer in new tab" }) --  move current buffer to new tab
 
 keymap.set("n", "-", "<CMD>Oil<CR>")
+
+keymap.set("n", "<leader><leader>", function()
+  vim.cmd("so")
+end, { desc = "Source current file" })
+
+keymap.set("n", "<leader>nd", "<cmd>NoiceDismiss<CR>", { desc = "Dismiss Noice Message" })

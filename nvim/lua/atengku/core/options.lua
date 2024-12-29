@@ -45,3 +45,5 @@ opt.splitbelow = true
 
 opt.swapfile = false
 opt.updatetime = 50
+
+opt.formatoptions:remove("o")
