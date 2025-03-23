@@ -8,6 +8,8 @@ return {
   opts = {
     keymaps = {
       ["<Tab>"] = "actions.select",
+      ["<C-h>"] = false,
+      ["<C-l>"] = false,
     },
     view_options = {
       show_hidden = true,

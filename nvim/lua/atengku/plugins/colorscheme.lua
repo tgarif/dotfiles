@@ -33,15 +33,15 @@ return {
     config = function()
       local catppuccin = require("catppuccin")
 
-      catppuccin.setup({
-        color_overrides = {
-          mocha = {
-            base = "#000000",
-            mantle = "#000000",
-            crust = "#000000",
-          },
-        },
-      })
+      -- catppuccin.setup({
+      --   color_overrides = {
+      --     mocha = {
+      --       base = "#000000",
+      --       mantle = "#000000",
+      --       crust = "#000000",
+      --     },
+      --   },
+      -- })
 
       -- load the colorscheme here
       vim.cmd([[colorscheme catppuccin]])

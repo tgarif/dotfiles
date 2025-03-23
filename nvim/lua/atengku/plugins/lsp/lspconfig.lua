@@ -94,6 +94,12 @@ return {
           capabilities = capabilities,
         })
       end,
+      ["ts_ls"] = function()
+        -- configure svelte server
+        lspconfig["ts_ls"].setup({
+          capabilities = capabilities,
+        })
+      end,
       ["svelte"] = function()
         -- configure svelte server
         lspconfig["svelte"].setup({
@@ -162,6 +168,20 @@ return {
               },
             },
           },
+        })
+      end,
+      ["dockerls"] = function()
+        lspconfig["dockerls"].setup({
+          capabilities = capabilities,
+          filetypes = { "Dockerfile", "dockerfile" },
+          root_dir = util.root_pattern("Dockerfile"),
+        })
+      end,
+      ["docker_compose_language_service"] = function()
+        lspconfig["docker_compose_language_service"].setup({
+          capabilities = capabilities,
+          filetypes = { "yaml" }, -- docker-compose files are YAML
+          root_dir = util.root_pattern("docker-compose.yml"),
         })
       end,
     })
