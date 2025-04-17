@@ -48,7 +48,16 @@ return {
           args = { "--search-parent-directories", "--stdin-filepath", "$FILENAME", "-" },
         },
         prettier = {
-          command = "prettier",
+          command = function()
+            -- Try to find project-level prettier first
+            local local_prettier = vim.fn.findfile("node_modules/.bin/prettier", ".;")
+            if local_prettier ~= "" then
+              return local_prettier
+            else
+              -- Fall back to global prettier if needed
+              return "prettier"
+            end
+          end,
           args = { "--stdin-filepath", "$FILENAME" },
         },
       },

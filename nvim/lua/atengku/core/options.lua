@@ -13,6 +13,9 @@ opt.shiftwidth = 4
 opt.expandtab = true
 opt.autoindent = true
 
+opt.foldmethod = "indent"
+opt.foldlevelstart = 99
+
 opt.smartindent = true
 
 -- Minimal number of screen lines to keep above and below the cursor.

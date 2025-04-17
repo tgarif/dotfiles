@@ -4,20 +4,45 @@ return {
   event = { "BufReadPre", "BufNewFile" }, -- to disable, comment this out
   config = function()
     local lint = require("lint")
-
     local eslint_d = lint.linters.eslint_d
-    eslint_d.args = {
-      "--no-warn-ignored",
-      "--format",
-      "json",
-      "--stdin",
-      "--stdin-filename",
-      function()
-        return vim.api.nvim_buf_get_name(0)
-      end,
-    }
-    eslint_d.cwd = function()
-      return vim.fn.getcwd() -- Use the current working directory
+
+    local function find_project_root(file_path)
+      local dir = vim.fn.fnamemodify(file_path, ":h")
+
+      while dir ~= "/" do
+        if vim.fn.filereadable(dir .. "/tsconfig.json") == 1 then
+          return dir
+        end
+        dir = vim.fn.fnamemodify(dir, ":h")
+      end
+
+      return vim.fn.getcwd()
+    end
+
+    local fix_config = vim.fn.findfile(".eslintrc.fix.json", ".;")
+
+    if fix_config ~= "" then
+      eslint_d.args = {
+        "--config",
+        fix_config,
+        "--format",
+        "json",
+        "--stdin",
+        "--stdin-filename",
+        function()
+          return vim.api.nvim_buf_get_name(0)
+        end,
+      }
+    else
+      eslint_d.args = {
+        "--format",
+        "json",
+        "--stdin",
+        "--stdin-filename",
+        function()
+          return vim.api.nvim_buf_get_name(0)
+        end,
+      }
     end
 
     -- Custom definition for golangci-lint
@@ -56,6 +81,7 @@ return {
       typescriptreact = { "eslint_d" },
       svelte = { "eslint_d" },
       go = { "golangci_lint" },
+      html = { "eslint_d" },
     }
 
     local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
@@ -63,9 +89,52 @@ return {
     vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
       group = lint_augroup,
       callback = function()
+        local current_file = vim.api.nvim_buf_get_name(0)
+
+        if current_file == "" then
+          return
+        end
+
+        local file_type = vim.bo.filetype
+        if
+          file_type == "typescript"
+          or file_type == "javascript"
+          or file_type == "typescriptreact"
+          or file_type == "javascriptreact"
+          or file_type == "html"
+        then
+          local project_root = find_project_root(current_file)
+
+          eslint_d.cwd = project_root
+        end
+
         lint.try_lint()
       end,
     })
+
+    vim.api.nvim_create_user_command("EslintDebug", function()
+      local current_file = vim.api.nvim_buf_get_name(0)
+      print("Current file: " .. current_file)
+      print("CWD: " .. vim.fn.getcwd())
+
+      local project_root = find_project_root(current_file)
+      print("Project root (with tsconfig.json): " .. project_root)
+      print("tsconfig.json exists: " .. tostring(vim.fn.filereadable(project_root .. "/tsconfig.json") == 1))
+
+      if eslint_d.cwd then
+        print("Current eslint_d.cwd: " .. eslint_d.cwd)
+      else
+        print("eslint_d.cwd is not set")
+      end
+
+      local handle = io.popen("eslint_d status")
+      local result = handle:read("*a")
+      handle:close()
+      print("eslint_d status:")
+      print(result)
+
+      print("\nTo restart eslint_d, run: eslint_d restart")
+    end, {})
 
     vim.keymap.set("n", "<leader>l", function()
       lint.try_lint()
