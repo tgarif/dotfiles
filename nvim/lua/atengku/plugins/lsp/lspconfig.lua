@@ -184,6 +184,55 @@ return {
           root_dir = util.root_pattern("docker-compose.yml"),
         })
       end,
+      ["eslint"] = function()
+        lspconfig["eslint"].setup({
+          capabilities = capabilities,
+          -- Enable support for JavaScript/TypeScript files
+          filetypes = {
+            "javascript",
+            "javascriptreact",
+            "javascript.jsx",
+            "typescript",
+            "typescriptreact",
+            "typescript.tsx",
+            "vue",
+            "svelte",
+            "astro",
+            "html",
+          },
+          -- Find the project root based on eslint configs
+          root_dir = util.root_pattern(
+            "eslint.config.js",
+            "eslint.config.mjs",
+            ".eslintrc",
+            ".eslintrc.js",
+            ".eslintrc.fix.json",
+            ".eslintrc.json",
+            ".eslintrc.cjs",
+            "package.json"
+          ),
+          -- Configure the ESLint server
+          settings = {
+            eslint = {
+              workingDirectories = { mode = "auto" },
+              -- Support for modern config formats
+              experimental = {
+                useFlatConfig = true,
+              },
+              validate = {
+                "javascript",
+                "javascriptreact",
+                "typescript",
+                "typescriptreact",
+                "vue",
+                "svelte",
+                "astro",
+                "html",
+              },
+            },
+          },
+        })
+      end,
     })
   end,
 }

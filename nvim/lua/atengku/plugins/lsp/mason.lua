@@ -41,6 +41,7 @@ return {
         "gopls",
         "docker_compose_language_service",
         "dockerls",
+        "eslint",
       },
       -- auto-install configured servers (with lspconfig)
       automatic_installation = true, -- not the same as ensure_installed
@@ -50,7 +51,6 @@ return {
       ensure_installed = {
         "prettier", -- prettier formatter
         "stylua", -- lua formatter
-        "eslint_d", -- js linter
         "gofumpt",
         "goimports",
         "golines",
