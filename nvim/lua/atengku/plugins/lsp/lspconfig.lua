@@ -82,10 +82,20 @@ return {
 
     -- Change the Diagnostic symbols in the sign column (gutter)
     local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
-    for type, icon in pairs(signs) do
-      local hl = "DiagnosticSign" .. type
-      vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-    end
+    vim.diagnostic.config({
+      virtual_text = true, -- Show diagnostics as inline text
+      underline = true, -- Underline text with errors
+      update_in_insert = false, -- Don't update diagnostics in insert mode
+      severity_sort = true, -- Sort diagnostics by severity
+      signs = {
+        text = {
+          [vim.diagnostic.severity.ERROR] = signs.Error,
+          [vim.diagnostic.severity.WARN] = signs.Warn,
+          [vim.diagnostic.severity.HINT] = signs.Hint,
+          [vim.diagnostic.severity.INFO] = signs.Info,
+        },
+      },
+    })
 
     mason_lspconfig.setup_handlers({
       -- default handler for installed servers
@@ -126,7 +136,17 @@ return {
         -- configure emmet language server
         lspconfig["emmet_ls"].setup({
           capabilities = capabilities,
-          filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
+          filetypes = {
+            "html",
+            "htmlangular",
+            "typescriptreact",
+            "javascriptreact",
+            "css",
+            "sass",
+            "scss",
+            "less",
+            "svelte",
+          },
         })
       end,
       ["lua_ls"] = function()
@@ -199,6 +219,7 @@ return {
             "svelte",
             "astro",
             "html",
+            "htmlangular",
           },
           -- Find the project root based on eslint configs
           root_dir = util.root_pattern(
@@ -228,8 +249,23 @@ return {
                 "svelte",
                 "astro",
                 "html",
+                "htmlangular",
               },
             },
+          },
+        })
+      end,
+      ["html"] = function()
+        lspconfig["html"].setup({
+          capabilities = capabilities,
+          filetypes = { "html", "htmlangular" },
+          init_options = {
+            configurationSection = { "html", "css", "javascript" },
+            embeddedLanguages = {
+              css = true,
+              javascript = true,
+            },
+            provideFormatter = true,
           },
         })
       end,

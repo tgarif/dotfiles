@@ -30,6 +30,7 @@ return {
           "tsx",
           "yaml",
           "html",
+          "angular",
           "css",
           "prisma",
           "markdown",
