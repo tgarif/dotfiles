@@ -98,188 +98,186 @@ return {
       },
     })
 
-    mason_lspconfig.setup_handlers({
-      -- default handler for installed servers
-      function(server_name)
-        lspconfig[server_name].setup({
-          capabilities = capabilities,
-        })
-      end,
-      ["ts_ls"] = function()
-        -- configure svelte server
-        lspconfig["ts_ls"].setup({
-          capabilities = capabilities,
-        })
-      end,
-      ["svelte"] = function()
-        -- configure svelte server
-        lspconfig["svelte"].setup({
-          capabilities = capabilities,
-          on_attach = function(client, bufnr)
-            vim.api.nvim_create_autocmd("BufWritePost", {
-              pattern = { "*.js", "*.ts" },
-              callback = function(ctx)
-                -- Here use ctx.match instead of ctx.file
-                client.notify("$/onDidChangeTsOrJsFile", { uri = ctx.match })
-              end,
-            })
+    -- Setup LSP servers individually
+    -- TypeScript/JavaScript
+    lspconfig["ts_ls"].setup({
+      capabilities = capabilities,
+    })
+
+    -- Svelte
+    lspconfig["svelte"].setup({
+      capabilities = capabilities,
+      on_attach = function(client, bufnr)
+        vim.api.nvim_create_autocmd("BufWritePost", {
+          pattern = { "*.js", "*.ts" },
+          callback = function(ctx)
+            -- Here use ctx.file for the file URI
+            client.notify("$/onDidChangeTsOrJsFile", { uri = ctx.file })
           end,
         })
       end,
-      ["graphql"] = function()
-        -- configure graphql language server
-        lspconfig["graphql"].setup({
-          capabilities = capabilities,
-          filetypes = { "graphql", "gql", "svelte", "typescriptreact", "javascriptreact" },
-        })
-      end,
-      ["emmet_ls"] = function()
-        -- configure emmet language server
-        lspconfig["emmet_ls"].setup({
-          capabilities = capabilities,
-          filetypes = {
-            "html",
-            "htmlangular",
-            "typescriptreact",
-            "javascriptreact",
-            "css",
-            "sass",
-            "scss",
-            "less",
-            "svelte",
+    })
+
+    -- GraphQL
+    lspconfig["graphql"].setup({
+      capabilities = capabilities,
+      filetypes = { "graphql", "gql", "svelte", "typescriptreact", "javascriptreact" },
+    })
+
+    -- Emmet
+    lspconfig["emmet_ls"].setup({
+      capabilities = capabilities,
+      filetypes = {
+        "html",
+        "htmlangular",
+        "typescriptreact",
+        "javascriptreact",
+        "css",
+        "sass",
+        "scss",
+        "less",
+        "svelte",
+      },
+    })
+
+    -- Lua
+    lspconfig["lua_ls"].setup({
+      capabilities = capabilities,
+      settings = {
+        Lua = {
+          -- make the language server recognize "vim" global
+          diagnostics = {
+            globals = { "vim" },
           },
-        })
-      end,
-      ["lua_ls"] = function()
-        -- configure lua server (with special settings)
-        lspconfig["lua_ls"].setup({
-          capabilities = capabilities,
-          settings = {
-            Lua = {
-              -- make the language server recognize "vim" global
-              diagnostics = {
-                globals = { "vim" },
-              },
-              completion = {
-                callSnippet = "Replace",
-              },
-            },
+          completion = {
+            callSnippet = "Replace",
           },
-        })
-      end,
-      ["clangd"] = function()
-        -- configure c language server
-        lspconfig["clangd"].setup({
-          capabilities = capabilities,
-          filetypes = { "c", "cpp" },
-        })
-      end,
-      ["gopls"] = function()
-        lspconfig["gopls"].setup({
-          capabilities = capabilities,
-          cmd = { "gopls" },
-          filetypes = { "go", "gomod", "gowork", "gotmpl" },
-          root_dir = util.root_pattern("go.work", "go.mod", ".git"),
-          settings = {
-            gopls = {
-              completeUnimported = true,
-              usePlaceholders = true,
-              analyses = {
-                unusedparams = true,
-              },
-            },
+        },
+      },
+    })
+
+    -- C/C++
+    lspconfig["clangd"].setup({
+      capabilities = capabilities,
+      filetypes = { "c", "cpp" },
+    })
+
+    -- Go
+    lspconfig["gopls"].setup({
+      capabilities = capabilities,
+      cmd = { "gopls" },
+      filetypes = { "go", "gomod", "gowork", "gotmpl" },
+      root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+      settings = {
+        gopls = {
+          completeUnimported = true,
+          usePlaceholders = true,
+          analyses = {
+            unusedparams = true,
           },
-        })
-      end,
-      ["golangci_lint_ls"] = function()
-        lspconfig["golangci_lint_ls"].setup({
-          capabilities = capabilities,
-          filetypes = { "go" },
-          -- root_dir = util.root_pattern(".golangci.yml", ".golangci.yaml", "go.mod", ".git"),
-          -- init_options = {
-          --   command = { "golangci-lint", "run", "--out-format", "json" },
-          -- },
-        })
-      end,
-      ["dockerls"] = function()
-        lspconfig["dockerls"].setup({
-          capabilities = capabilities,
-          filetypes = { "Dockerfile", "dockerfile" },
-          root_dir = util.root_pattern("Dockerfile"),
-        })
-      end,
-      ["docker_compose_language_service"] = function()
-        lspconfig["docker_compose_language_service"].setup({
-          capabilities = capabilities,
-          filetypes = { "yaml" }, -- docker-compose files are YAML
-          root_dir = util.root_pattern("docker-compose.yml"),
-        })
-      end,
-      ["eslint"] = function()
-        lspconfig["eslint"].setup({
-          capabilities = capabilities,
-          -- Enable support for JavaScript/TypeScript files
-          filetypes = {
+        },
+      },
+    })
+
+    -- Go linter
+    lspconfig["golangci_lint_ls"].setup({
+      capabilities = capabilities,
+      filetypes = { "go" },
+    })
+
+    -- Docker
+    lspconfig["dockerls"].setup({
+      capabilities = capabilities,
+      filetypes = { "Dockerfile", "dockerfile" },
+      root_dir = util.root_pattern("Dockerfile"),
+    })
+
+    -- Docker Compose
+    lspconfig["docker_compose_language_service"].setup({
+      capabilities = capabilities,
+      filetypes = { "yaml" },
+      root_dir = util.root_pattern("docker-compose.yml"),
+    })
+
+    -- ESLint
+    lspconfig["eslint"].setup({
+      capabilities = capabilities,
+      filetypes = {
+        "javascript",
+        "javascriptreact",
+        "javascript.jsx",
+        "typescript",
+        "typescriptreact",
+        "typescript.tsx",
+        "vue",
+        "svelte",
+        "astro",
+        "html",
+        "htmlangular",
+      },
+      root_dir = util.root_pattern(
+        "eslint.config.js",
+        "eslint.config.mjs",
+        ".eslintrc",
+        ".eslintrc.js",
+        ".eslintrc.fix.json",
+        ".eslintrc.json",
+        ".eslintrc.cjs",
+        "package.json"
+      ),
+      settings = {
+        eslint = {
+          workingDirectories = { mode = "auto" },
+          experimental = {
+            useFlatConfig = true,
+          },
+          validate = {
             "javascript",
             "javascriptreact",
-            "javascript.jsx",
             "typescript",
             "typescriptreact",
-            "typescript.tsx",
             "vue",
             "svelte",
             "astro",
             "html",
             "htmlangular",
           },
-          -- Find the project root based on eslint configs
-          root_dir = util.root_pattern(
-            "eslint.config.js",
-            "eslint.config.mjs",
-            ".eslintrc",
-            ".eslintrc.js",
-            ".eslintrc.fix.json",
-            ".eslintrc.json",
-            ".eslintrc.cjs",
-            "package.json"
-          ),
-          -- Configure the ESLint server
-          settings = {
-            eslint = {
-              workingDirectories = { mode = "auto" },
-              -- Support for modern config formats
-              experimental = {
-                useFlatConfig = true,
-              },
-              validate = {
-                "javascript",
-                "javascriptreact",
-                "typescript",
-                "typescriptreact",
-                "vue",
-                "svelte",
-                "astro",
-                "html",
-                "htmlangular",
-              },
-            },
-          },
-        })
-      end,
-      ["html"] = function()
-        lspconfig["html"].setup({
-          capabilities = capabilities,
-          filetypes = { "html", "htmlangular" },
-          init_options = {
-            configurationSection = { "html", "css", "javascript" },
-            embeddedLanguages = {
-              css = true,
-              javascript = true,
-            },
-            provideFormatter = true,
-          },
-        })
-      end,
+        },
+      },
+    })
+
+    -- HTML
+    lspconfig["html"].setup({
+      capabilities = capabilities,
+      filetypes = { "html", "htmlangular" },
+      init_options = {
+        configurationSection = { "html", "css", "javascript" },
+        embeddedLanguages = {
+          css = true,
+          javascript = true,
+        },
+        provideFormatter = true,
+      },
+    })
+
+    -- CSS
+    lspconfig["cssls"].setup({
+      capabilities = capabilities,
+    })
+
+    -- Tailwind CSS
+    lspconfig["tailwindcss"].setup({
+      capabilities = capabilities,
+    })
+
+    -- Prisma
+    lspconfig["prismals"].setup({
+      capabilities = capabilities,
+    })
+
+    -- Rust
+    lspconfig["rust_analyzer"].setup({
+      capabilities = capabilities,
     })
   end,
 }
