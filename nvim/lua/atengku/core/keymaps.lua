@@ -6,6 +6,8 @@ local keymap = vim.keymap -- for conciseness
 
 -- keymap.set("i", "jk", "<ESC>")
 
+vim.api.nvim_set_keymap("i", "<C-c>", "<Esc>", { noremap = true })
+
 keymap.set("n", "<leader>nh", ":nohl<CR>")
 
 keymap.set("n", "<leader>v", "<C-v>") -- remap for wsl specific ctrl + v to paste

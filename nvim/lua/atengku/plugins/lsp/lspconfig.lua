@@ -5,6 +5,7 @@ return {
     "hrsh7th/cmp-nvim-lsp",
     { "antosha417/nvim-lsp-file-operations", config = true },
     { "folke/neodev.nvim", opts = {} },
+    "williamboman/mason-lspconfig.nvim",
   },
   config = function()
     -- import lspconfig plugin
@@ -188,6 +189,16 @@ return {
               },
             },
           },
+        })
+      end,
+      ["golangci_lint_ls"] = function()
+        lspconfig["golangci_lint_ls"].setup({
+          capabilities = capabilities,
+          filetypes = { "go" },
+          -- root_dir = util.root_pattern(".golangci.yml", ".golangci.yaml", "go.mod", ".git"),
+          -- init_options = {
+          --   command = { "golangci-lint", "run", "--out-format", "json" },
+          -- },
         })
       end,
       ["dockerls"] = function()
