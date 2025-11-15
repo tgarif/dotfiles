@@ -64,7 +64,6 @@ return {
         -- "clang-format",
         "black", -- python formatter
         "ruff", -- python linter
-        "mypy", -- python type checker
       },
     })
   end,
