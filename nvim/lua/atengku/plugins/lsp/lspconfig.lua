@@ -279,5 +279,34 @@ return {
     lspconfig["rust_analyzer"].setup({
       capabilities = capabilities,
     })
+
+    -- Python
+    lspconfig["pylsp"].setup({
+      capabilities = capabilities,
+      settings = {
+        pylsp = {
+          plugins = {
+            -- Disable default formatters and linters
+            pycodestyle = { enabled = false },
+            mccabe = { enabled = false },
+            pyflakes = { enabled = false },
+            autopep8 = { enabled = false },
+            yapf = { enabled = false },
+            black = { enabled = false },
+            -- Enable ruff linter
+            ruff = {
+              enabled = true,
+              lineLength = 88,
+            },
+            -- Enable mypy type checker
+            mypy = {
+              enabled = true,
+              live_mode = true,
+              strict = true,
+            },
+          },
+        },
+      },
+    })
   end,
 }

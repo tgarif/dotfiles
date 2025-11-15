@@ -43,6 +43,7 @@ return {
         "docker_compose_language_service",
         "dockerls",
         "eslint",
+        "pylsp",
       },
       -- auto-install configured servers (with lspconfig)
       automatic_installation = true,
@@ -61,6 +62,9 @@ return {
         -- "golangci-lint",
         "golangci-lint-langserver",
         -- "clang-format",
+        "black", -- python formatter
+        "ruff", -- python linter
+        "mypy", -- python type checker
       },
     })
   end,

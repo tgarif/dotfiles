@@ -25,6 +25,7 @@ return {
         graphql = { "prettier" },
         lua = { "stylua" },
         go = { "gofmt" },
+        python = { "black" },
         -- c = { "clang-format" },
       },
       format_on_save = function(bufnr)
