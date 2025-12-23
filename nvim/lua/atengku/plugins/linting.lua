@@ -1,54 +1,71 @@
 return {
-  -- "mfussenegger/nvim-lint",
-  -- lazy = true,
-  -- event = { "BufReadPre", "BufNewFile" }, -- to disable, comment this out
-  -- config = function()
-  --   local lint = require("lint")
-  --
-  --   -- Custom definition for golangci-lint
-  --   lint.linters.golangci_lint = {
-  --     name = "golangci_lint", -- Required name field
-  --     cmd = "golangci-lint",
-  --     args = { "run", "--out.json.path", "stdout" },
-  --     stdin = false,
-  --     stream = "stdout",
-  --     ignore_exitcode = true,
-  --     parser = function(output)
-  --       local diagnostics = {}
-  --       local results = vim.fn.json_decode(output)
-  --       if results and results.Issues then
-  --         for _, issue in ipairs(results.Issues) do
-  --           -- Check if 'line' and 'column' fields are present
-  --           if issue.Line and issue.Column then
-  --             table.insert(diagnostics, {
-  --               lnum = issue.Line - 1, -- 0-based line number
-  --               col = issue.Column - 1, -- 0-based column number
-  --               source = issue.Link,
-  --               message = issue.Text,
-  --               severity = issue.Severity == "error" and vim.diagnostic.severity.ERROR or vim.diagnostic.severity.WARN,
-  --             })
-  --           end
-  --         end
-  --       end
-  --       return diagnostics
-  --     end,
-  --   }
-  --
-  --   lint.linters_by_ft = {
-  --     go = { "golangci_lint" },
-  --   }
-  --
-  --   local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
-  --
-  --   vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
-  --     group = lint_augroup,
-  --     callback = function()
-  --       lint.try_lint()
-  --     end,
-  --   })
-  --
-  --   vim.keymap.set("n", "<leader>l", function()
-  --     lint.try_lint()
-  --   end, { desc = "Trigger linting for current file" })
-  -- end,
+  "mfussenegger/nvim-lint",
+  event = { "BufReadPre", "BufNewFile" },
+  config = function()
+    local lint = require("lint")
+
+    lint.linters_by_ft = {
+      python = { "pylint" },
+      javascript = { "eslint_d" },
+      typescript = { "eslint_d" },
+      typescriptreact = { "eslint_d" },
+    }
+
+    local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
+
+    local function file_in_cwd(file_name)
+      return vim.fs.find(file_name, {
+        upward = true,
+        stop = vim.loop.cwd():match("(.+)/"),
+        path = vim.fs.dirname(vim.api.nvim_buf_get_name(0)),
+        type = "file",
+      })[1]
+    end
+
+    local function remove_linter(linters, linter_name)
+      for k, v in pairs(linters) do
+        if v == linter_name then
+          linters[k] = nil
+          break
+        end
+      end
+    end
+
+    local function linter_in_linters(linters, linter_name)
+      for k, v in pairs(linters) do
+        if v == linter_name then
+          return true
+        end
+      end
+      return false
+    end
+
+    local function remove_linter_if_missing_config_file(linters, linter_name, config_file_name)
+      if linter_in_linters(linters, linter_name) and not file_in_cwd(config_file_name) then
+        remove_linter(linters, linter_name)
+      end
+    end
+
+    local function try_linting()
+      local linters = lint.linters_by_ft[vim.bo.filetype]
+
+      -- if linters then
+      --   -- remove_linter_if_missing_config_file(linters, "eslint_d", ".eslintrc.cjs")
+      --   remove_linter_if_missing_config_file(linters, "eslint_d", "eslint.config.js")
+      -- end
+
+      lint.try_lint(linters)
+    end
+
+    vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
+      group = lint_augroup,
+      callback = function()
+        try_linting()
+      end,
+    })
+
+    vim.keymap.set("n", "<leader>l", function()
+      try_linting()
+    end, { desc = "Trigger linting for current file" })
+  end,
 }

@@ -14,10 +14,6 @@ return {
     "saadparwaiz1/cmp_luasnip", -- for autocompletion
     "rafamadriz/friendly-snippets", -- useful snippets
     "onsails/lspkind.nvim", -- vs-code like pictograms
-    {
-      "benfowler/telescope-luasnip.nvim", -- adds snippet selection with Telescope
-      dependencies = { "nvim-telescope/telescope.nvim" },
-    },
   },
   config = function()
     local cmp = require("cmp")
@@ -26,18 +22,10 @@ return {
 
     local lspkind = require("lspkind")
 
-    local telescope = require("telescope")
-
     -- loads vscode style snippets from installed plugins (e.g. friendly-snippets)
     require("luasnip.loaders.from_vscode").lazy_load()
 
-    -- Load Telescope extension for LuaSnip
-    telescope.load_extension("luasnip")
-
     cmp.setup({
-      completion = {
-        completeopt = "menu,menuone,preview,noselect",
-      },
       snippet = { -- configure how nvim-cmp interacts with snippet engine
         expand = function(args)
           luasnip.lsp_expand(args.body)
@@ -59,6 +47,7 @@ return {
         { name = "buffer" }, -- text within current buffer
         { name = "path" }, -- file system paths
       }),
+
       -- configure lspkind for vs-code like pictograms in completion menu
       formatting = {
         format = lspkind.cmp_format({
@@ -67,7 +56,5 @@ return {
         }),
       },
     })
-
-    vim.keymap.set("i", "<F1>", "<cmd>Telescope luasnip<cr>", { noremap = true, silent = true })
   end,
 }
