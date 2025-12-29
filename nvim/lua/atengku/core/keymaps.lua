@@ -42,5 +42,3 @@ keymap.set("n", "-", "<CMD>Oil<CR>")
 keymap.set("n", "<leader><leader>", function()
   vim.cmd("so")
 end, { desc = "Source current file" })
-
-keymap.set("n", "<leader>nd", "<cmd>NoiceDismiss<CR>", { desc = "Dismiss Noice Message" })
