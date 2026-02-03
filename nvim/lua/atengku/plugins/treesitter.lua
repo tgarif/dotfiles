@@ -27,7 +27,6 @@ return {
         "markdown",
         "markdown_inline",
         "svelte",
-        "graphql",
         "bash",
         "lua",
         "vim",
@@ -37,6 +36,7 @@ return {
         "rust",
         "vimdoc",
         "c",
+        "glimmer",
       },
       incremental_selection = {
         enable = true,

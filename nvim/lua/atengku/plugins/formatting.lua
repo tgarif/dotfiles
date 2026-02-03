@@ -22,7 +22,6 @@ return {
         json = { "prettier" },
         yaml = { "prettier" },
         markdown = { "prettier" },
-        graphql = { "prettier" },
         lua = { "stylua" },
         go = { "gofmt" },
         python = { "black" },
