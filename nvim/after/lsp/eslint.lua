@@ -15,7 +15,7 @@ return {
       useFlatConfig = true,
     },
     workingDirectory = {
-      mode = "location",
+      mode = "auto",
     },
   },
 }
