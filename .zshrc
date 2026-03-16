@@ -4,7 +4,7 @@
 export PATH="$HOME/go/bin:$HOME/.local/bin:$PATH"
 export EDITOR=nvim
 export VISUAL=nvim
-export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+eval $(keychain --eval --quiet github-ssh-key azure-devops aariatech-server)
 export CLAUDE_CODE_MAX_OUTPUT_TOKENS=64000
 
 # ========================================
