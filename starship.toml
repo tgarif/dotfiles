@@ -42,6 +42,7 @@ format = "$symbol "
 
 [os.symbols]
 Arch = "󰣇"
+Macos = ""
 
 [username]
 show_always = true
