@@ -4,7 +4,6 @@
 export PATH="$HOME/go/bin:$HOME/.local/bin:$PATH"
 export EDITOR=nvim
 export VISUAL=nvim
-eval $(keychain --eval --quiet github-ssh-key azure-devops aariatech-server)
 export CLAUDE_CODE_MAX_OUTPUT_TOKENS=64000
 
 # ========================================
@@ -70,6 +69,8 @@ source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zs
 # Starship prompt (must be last)
 # ========================================
 eval "$(starship init zsh)"
+
+eval $(keychain --eval --quiet github-ssh-key azure-devops aariatech-server)
 
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
