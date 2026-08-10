@@ -1,0 +1,378 @@
+/* ╔═══════════════════════════════════════════════════════════════╗
+   ║                  W A Y B A R   —   S T Y L E                  ║
+   ║                     Catppuccin Mocha                          ║
+   ╚═══════════════════════════════════════════════════════════════╝
+
+   Design: a floating, fully transparent bar carrying individual
+   frosted "pills". Hyprland blurs the layer behind it (see the
+   waybar-blur layerrule), so the translucent pill backgrounds turn
+   into real frosted glass rather than flat grey.
+
+   GTK CSS note: Waybar uses GTK3, which supports only a subset of CSS.
+   No CSS variables, no calc(), no flexbox. Colours are therefore
+   written out literally throughout. */
+
+@define-color base     #1e1e2e;
+@define-color mantle   #181825;
+@define-color crust    #11111b;
+@define-color surface0 #313244;
+@define-color surface1 #45475a;
+@define-color surface2 #585b70;
+@define-color text     #cdd6f4;
+@define-color subtext0 #a6adc8;
+@define-color overlay0 #6c7086;
+@define-color blue     #89b4fa;
+@define-color lavender #b4befe;
+@define-color sapphire #74c7ec;
+@define-color sky      #89dceb;
+@define-color teal     #94e2d5;
+@define-color green    #a6e3a1;
+@define-color yellow   #f9e2af;
+@define-color peach    #fab387;
+@define-color maroon   #eba0ac;
+@define-color red      #f38ba8;
+@define-color mauve    #cba6f7;
+@define-color pink     #f5c2e7;
+@define-color flamingo #f2cdcd;
+
+/* ── RESET ────────────────────────────────────────────────────── */
+
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font", sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    min-height: 0;
+    /* GTK draws a faint text shadow by default; kill it for crispness */
+    text-shadow: none;
+    transition: none;
+}
+
+/* The bar itself is invisible — only the pills are seen. */
+window#waybar {
+    background: transparent;
+    color: @text;
+}
+
+window#waybar.hidden {
+    opacity: 0.2;
+}
+
+tooltip {
+    background: rgba(24, 24, 37, 0.96);
+    border: 1px solid @surface1;
+    border-radius: 12px;
+}
+
+tooltip label {
+    color: @text;
+    padding: 4px;
+}
+
+/* ── SHARED PILL LOOK ─────────────────────────────────────────── */
+/*
+   Every module gets the same frosted slab. Listed explicitly rather
+   than via a wildcard, because a wildcard would also hit the bar
+   window and the workspace button internals.
+*/
+
+#workspaces,
+#submap,
+#window,
+#clock,
+#cpu,
+#memory,
+#temperature,
+#disk,
+#network,
+#pulseaudio,
+#bluetooth,
+#tray,
+#custom-logo,
+#custom-power,
+#custom-gpu,
+#custom-updates,
+#custom-mouse,
+#custom-notification {
+    background: rgba(30, 30, 46, 0.72);
+    border: 1px solid rgba(69, 71, 90, 0.7);
+    border-radius: 12px;
+    padding: 0 12px;
+    margin: 0 3px;
+    color: @text;
+}
+
+/* ── LOGO ─────────────────────────────────────────────────────── */
+
+/*
+   CONTRAST RULE FOR EVERY ACCENT PILL BELOW:
+   the background must be a DARK, accent-TINTED colour at alpha >= 0.8 —
+   never a faint wash of the accent itself.
+
+   Two reasons:
+   1. The Hyprland layerrule sets ignore_alpha = 0.3, which means any
+      pixel fainter than that is skipped by the blur entirely. A pill at
+      alpha 0.16 therefore gets NO blur and NO darkening — its light
+      pastel text ends up sitting directly on the raw wallpaper, which is
+      unreadable the moment the wallpaper is bright.
+   2. Even with blur, a light wallpaper blurs to a light smear. Blur is an
+      aesthetic, not a contrast guarantee. The pill has to bring its own
+      dark ground so legibility never depends on the picture behind it.
+*/
+
+#custom-logo {
+    color: @blue;
+    font-size: 17px;
+    padding: 0 14px 0 12px;
+    background: rgba(30, 41, 62, 0.82);
+    border: 1px solid rgba(137, 180, 250, 0.55);
+}
+
+#custom-logo:hover {
+    background: rgba(43, 60, 92, 0.90);
+    color: @sky;
+}
+
+/* ── WORKSPACES ───────────────────────────────────────────────── */
+
+#workspaces {
+    padding: 0 4px;
+}
+
+#workspaces button {
+    /* Buttons sit inside the pill, so they carry no slab of their own */
+    background: transparent;
+    border: none;
+    border-radius: 9px;
+    padding: 0 9px;
+    margin: 4px 2px;
+    color: @overlay0;
+    font-weight: 700;
+}
+
+/* A workspace that exists but is not focused */
+#workspaces button.persistent,
+#workspaces button.empty {
+    color: @surface2;
+}
+
+/* Has windows on it */
+#workspaces button.occupied {
+    color: @lavender;
+}
+
+/* Focused on ITS monitor, but that monitor is not the focused one.
+   With three screens this is the important state — it shows you what
+   is on the other two at a glance. */
+#workspaces button.visible {
+    background: rgba(116, 199, 236, 0.16);
+    color: @sapphire;
+}
+
+/* The one you are actually typing into */
+#workspaces button.active {
+    background: rgba(203, 166, 247, 0.22);
+    color: @mauve;
+    padding: 0 13px;
+    box-shadow: inset 0 -2px 0 @mauve;
+}
+
+#workspaces button.urgent {
+    background: rgba(243, 139, 168, 0.28);
+    color: @red;
+}
+
+#workspaces button:hover {
+    background: rgba(180, 190, 254, 0.18);
+    color: @text;
+}
+
+#workspaces button.special {
+    color: @pink;
+}
+
+/* ── SUBMAP (resize mode indicator) ───────────────────────────── */
+
+#submap {
+    background: rgba(58, 43, 32, 0.86);
+    border: 1px solid rgba(250, 179, 135, 0.60);
+    color: @peach;
+}
+
+/* ── WINDOW TITLE ─────────────────────────────────────────────── */
+
+#window {
+    color: @subtext0;
+    font-weight: 500;
+    padding: 0 14px;
+}
+
+/* Empty workspace: hide the pill entirely rather than show a stub */
+window#waybar.empty #window {
+    background: transparent;
+    border-color: transparent;
+}
+
+/* ── CLOCK ────────────────────────────────────────────────────── */
+
+#clock {
+    /* Dark mauve-tinted ground, not a mauve wash — see the contrast rule
+       above. This is the pill that was illegible over pale wallpapers. */
+    background: rgba(45, 36, 60, 0.86);
+    border: 1px solid rgba(203, 166, 247, 0.55);
+    color: @mauve;
+    font-weight: 700;
+    padding: 0 16px;
+}
+
+#clock:hover {
+    background: rgba(62, 49, 82, 0.92);
+}
+
+/* ── SYSTEM METRICS ───────────────────────────────────────────── */
+/* Each metric gets its own hue so you can read the bar peripherally
+   without actually focusing on it. */
+
+#custom-gpu    { color: @green; }
+#cpu           { color: @sky; }
+#memory        { color: @teal; }
+#temperature   { color: @yellow; }
+#disk          { color: @flamingo; }
+#network       { color: @sapphire; }
+#pulseaudio    { color: @peach; }
+#bluetooth     { color: @blue; }
+#custom-mouse  { color: @lavender; }
+#custom-updates{ color: @pink; }
+
+/* Warning / critical states override the base hue */
+
+/* These REPLACE the pill's dark background, so they need their own dark
+   ground too — otherwise a critical warning ends up harder to read than
+   the normal state, which is exactly backwards. */
+#temperature.critical,
+#custom-gpu.gpu-critical {
+    background: rgba(54, 26, 34, 0.90);
+    border-color: rgba(243, 139, 168, 0.65);
+    color: @red;
+}
+
+#custom-gpu.gpu-warning {
+    color: @yellow;
+}
+
+#custom-mouse.mouse-warning {
+    color: @yellow;
+}
+
+#custom-mouse.mouse-critical {
+    background: rgba(54, 26, 34, 0.90);
+    border-color: rgba(243, 139, 168, 0.65);
+    color: @red;
+}
+
+#custom-updates.updates-many {
+    background: rgba(58, 43, 32, 0.86);
+    border-color: rgba(250, 179, 135, 0.60);
+    color: @peach;
+}
+
+/* Nothing to update — the module emits empty text, so collapse it */
+#custom-updates.updated {
+    background: transparent;
+    border-color: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+#pulseaudio.muted {
+    color: @overlay0;
+}
+
+#network.disconnected {
+    background: rgba(54, 26, 34, 0.90);
+    border-color: rgba(243, 139, 168, 0.65);
+    color: @red;
+}
+
+/* ── NOTIFICATIONS ────────────────────────────────────────────── */
+
+#custom-notification {
+    color: @yellow;
+    padding: 0 13px;
+}
+
+#custom-notification:hover {
+    background: rgba(58, 54, 36, 0.90);
+}
+
+/* ── TRAY ─────────────────────────────────────────────────────── */
+
+#tray {
+    padding: 0 12px;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background: rgba(243, 139, 168, 0.22);
+    border-radius: 9px;
+}
+
+#tray menu {
+    background: @mantle;
+    border: 1px solid @surface1;
+    border-radius: 12px;
+    color: @text;
+    padding: 6px;
+}
+
+/* ── POWER ────────────────────────────────────────────────────── */
+
+#custom-power {
+    background: rgba(60, 33, 42, 0.86);
+    border: 1px solid rgba(243, 139, 168, 0.55);
+    color: @red;
+    font-size: 15px;
+    padding: 0 14px;
+    margin-right: 0;
+}
+
+/* On hover this goes fully opaque red with dark text — a deliberate
+   inversion, since it is the one button you do not want to mis-click. */
+#custom-power:hover {
+    background: @red;
+    border-color: @red;
+    color: @crust;
+}
+
+/* ── HOVER FEEDBACK FOR METRIC PILLS ──────────────────────────── */
+
+#cpu:hover,
+#memory:hover,
+#temperature:hover,
+#disk:hover,
+#network:hover,
+#pulseaudio:hover,
+#bluetooth:hover,
+#custom-gpu:hover,
+#custom-mouse:hover,
+#custom-updates:hover {
+    background: rgba(69, 71, 90, 0.75);
+}
+
+/* ── SECONDARY BARS (MSI + AOC) ───────────────────────────────── */
+/* Slightly recessed so your eye is drawn to the primary bar. */
+
+/* The secondary bars are meant to read as slightly recessed, but this
+   selector OVERRIDES the clock's dark ground — so it has to supply its
+   own, or the MSI and AOC clocks stay unreadable over pale wallpapers
+   even after the primary one is fixed. Recessed = a touch darker and a
+   dimmer border, NOT lower alpha. */
+window#waybar.waybar-secondary #clock {
+    background: rgba(38, 31, 50, 0.84);
+    border-color: rgba(203, 166, 247, 0.38);
+}

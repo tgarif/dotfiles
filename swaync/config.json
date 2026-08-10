@@ -1,0 +1,120 @@
+{
+  "$schema": "/etc/xdg/swaync/configSchema.json",
+
+  "positionX": "right",
+  "positionY": "top",
+
+  "layer": "overlay",
+  "layer-shell": true,
+  "control-center-layer": "overlay",
+  "cssPriority": "user",
+
+  "control-center-margin-top": 12,
+  "control-center-margin-bottom": 12,
+  "control-center-margin-right": 12,
+  "control-center-margin-left": 12,
+
+  "control-center-width": 440,
+  "control-center-height": 900,
+  "notification-window-width": 420,
+
+  "notification-icon-size": 48,
+  "notification-body-image-height": 140,
+  "notification-body-image-width": 220,
+  "notification-2fa-action": true,
+  "notification-inline-replies": true,
+
+  "timeout": 8,
+  "timeout-low": 5,
+  "timeout-critical": 0,
+
+  "fit-to-screen": false,
+  "keyboard-shortcuts": true,
+  "image-visibility": "when-available",
+  "transition-time": 200,
+  "hide-on-clear": true,
+  "hide-on-action": true,
+  "script-fail-notify": true,
+
+  "widgets": [
+    "title",
+    "dnd",
+    "mpris",
+    "volume",
+    "buttons-grid",
+    "notifications"
+  ],
+
+  "widget-config": {
+    "title": {
+      "text": "Notifications",
+      "clear-all-button": true,
+      "button-text": "Clear all"
+    },
+
+    "dnd": {
+      "text": "Do not disturb"
+    },
+
+    "mpris": {
+      "image-size": 92,
+      "image-radius": 12,
+      "blacklist": []
+    },
+
+    "volume": {
+      "label": "󰕾",
+      "expand-button-label": "",
+      "collapse-button-label": "",
+      "show-per-app": true,
+      "show-per-app-icon": true,
+      "show-per-app-label": false
+    },
+
+    "buttons-grid": {
+      "actions": [
+        {
+          "label": "󰖩",
+          "type": "toggle",
+          "active": true,
+          "command": "sh -c 'nmcli radio wifi | grep -q enabled && nmcli radio wifi off || nmcli radio wifi on'",
+          "update-command": "sh -c 'nmcli radio wifi | grep -q enabled && echo true || echo false'"
+        },
+        {
+          "label": "󰂯",
+          "type": "toggle",
+          "active": true,
+          "command": "sh -c 'bluetoothctl show | grep -q \"Powered: yes\" && bluetoothctl power off || bluetoothctl power on'",
+          "update-command": "sh -c 'bluetoothctl show | grep -q \"Powered: yes\" && echo true || echo false'"
+        },
+        {
+          "label": "󰤄",
+          "type": "toggle",
+          "active": false,
+          "command": "sh -c 'pgrep -x hypridle >/dev/null && pkill hypridle || hypridle & '",
+          "update-command": "sh -c 'pgrep -x hypridle >/dev/null && echo false || echo true'"
+        },
+        {
+          "label": "󰃞",
+          "command": "sh -c 'pgrep -x hyprsunset >/dev/null && pkill hyprsunset || hyprsunset -t 4000'"
+        },
+        {
+          "label": "󰄀",
+          "command": "sh -c '~/.config/hypr/scripts/screenshot.sh region'"
+        },
+        {
+          "label": "󰸉",
+          "command": "sh -c '~/.config/hypr/scripts/wallpaper.sh'"
+        },
+        {
+          "label": "󰍁",
+          "command": "sh -c 'loginctl lock-session'"
+        },
+        {
+          "label": "󰐥",
+          "command": "sh -c 'wlogout -b 5'"
+        }
+      ]
+    }
+  }
+}

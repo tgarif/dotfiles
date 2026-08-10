@@ -1,0 +1,183 @@
+/* ╔═══════════════════════════════════════════════════════════════╗
+   ║              R O F I   —   Catppuccin Mocha                   ║
+   ╚═══════════════════════════════════════════════════════════════╝
+
+   A centred, frosted-glass panel. Hyprland blurs the rofi layer (see
+   the rofi-blur layerrule), so the translucent background below reads
+   as real glass rather than flat grey.
+
+   Individual scripts override width/columns/lines with -theme-str,
+   so this file is the shared base look. */
+
+* {
+    base:        #1e1e2e;
+    mantle:      #181825;
+    crust:       #11111b;
+    surface0:    #313244;
+    surface1:    #45475a;
+    surface2:    #585b70;
+    overlay0:    #6c7086;
+    text:        #cdd6f4;
+    subtext0:    #a6adc8;
+    blue:        #89b4fa;
+    lavender:    #b4befe;
+    sapphire:    #74c7ec;
+    teal:        #94e2d5;
+    green:       #a6e3a1;
+    yellow:      #f9e2af;
+    peach:       #fab387;
+    red:         #f38ba8;
+    mauve:       #cba6f7;
+    pink:        #f5c2e7;
+
+    background-color:   transparent;
+    text-color:         @text;
+    margin:             0;
+    padding:            0;
+    spacing:            0;
+}
+
+window {
+    /* Centred on the FOCUSED monitor. With three screens this matters:
+       "location: center" without this would pin it to one display. */
+    location:           center;
+    anchor:             center;
+    fullscreen:         false;
+
+    width:              40%;
+    transparency:       "real";
+
+    border:             2px;
+    border-color:       @mauve;
+    border-radius:      18px;
+
+    background-color:   rgba(30, 30, 46, 0.82);
+
+    cursor:             "default";
+}
+
+mainbox {
+    enabled:            true;
+    padding:            18px;
+    spacing:            14px;
+    children:           [ "inputbar", "message", "listview" ];
+}
+
+/* ── SEARCH FIELD ────────────────────────────────────────────── */
+
+inputbar {
+    enabled:            true;
+    padding:            12px 16px;
+    spacing:            12px;
+    border-radius:      12px;
+    background-color:   rgba(24, 24, 37, 0.75);
+    border:             1px;
+    border-color:       @surface1;
+    children:           [ "prompt", "entry" ];
+}
+
+prompt {
+    enabled:            true;
+    background-color:   transparent;
+    text-color:         @mauve;
+    font:               "JetBrainsMono Nerd Font Bold 12";
+    vertical-align:     0.5;
+}
+
+entry {
+    enabled:            true;
+    background-color:   transparent;
+    text-color:         @text;
+    cursor:             text;
+    placeholder:        "Search…";
+    placeholder-color:  @overlay0;
+    vertical-align:     0.5;
+}
+
+/* ── RESULTS ─────────────────────────────────────────────────── */
+
+listview {
+    enabled:            true;
+    columns:            1;
+    lines:              9;
+    cycle:              true;
+    dynamic:            true;
+    scrollbar:          true;
+    reverse:            false;
+    fixed-height:       false;
+    fixed-columns:      true;
+    spacing:            4px;
+    background-color:   transparent;
+    cursor:             "default";
+}
+
+scrollbar {
+    handle-width:       4px;
+    handle-color:       @mauve;
+    border-radius:      10px;
+    background-color:   @surface0;
+}
+
+element {
+    enabled:            true;
+    padding:            9px 12px;
+    spacing:            12px;
+    border-radius:      10px;
+    background-color:   transparent;
+    text-color:         @text;
+    cursor:             pointer;
+}
+
+element normal.normal   { background-color: transparent;             text-color: @text; }
+element normal.urgent   { background-color: rgba(243,139,168,0.16);  text-color: @red; }
+element normal.active   { background-color: rgba(137,180,250,0.14);  text-color: @blue; }
+
+element selected.normal {
+    background-color:   @mauve;
+    text-color:         @crust;
+}
+element selected.urgent { background-color: @red;   text-color: @crust; }
+element selected.active { background-color: @blue;  text-color: @crust; }
+
+element alternate.normal { background-color: transparent; text-color: @text; }
+
+element-icon {
+    size:               1.5em;
+    background-color:   transparent;
+    text-color:         inherit;
+    cursor:             inherit;
+    vertical-align:     0.5;
+}
+
+element-text {
+    background-color:   transparent;
+    text-color:         inherit;
+    highlight:          inherit;
+    cursor:             inherit;
+    vertical-align:     0.5;
+    horizontal-align:   0;
+}
+
+/* ── MESSAGES / ERRORS ───────────────────────────────────────── */
+
+message {
+    enabled:            true;
+    margin:             0;
+    padding:            0;
+    background-color:   transparent;
+}
+
+textbox {
+    padding:            10px 14px;
+    border-radius:      10px;
+    background-color:   rgba(69, 71, 90, 0.55);
+    text-color:         @text;
+    vertical-align:     0.5;
+}
+
+error-message {
+    padding:            14px;
+    border-radius:      12px;
+    background-color:   rgba(243, 139, 168, 0.18);
+    text-color:         @red;
+}

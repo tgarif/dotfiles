@@ -1,0 +1,391 @@
+// ╔═══════════════════════════════════════════════════════════════╗
+// ║                        W A Y B A R                            ║
+// ║   Two bar definitions: a full one on the BenQ (primary) and    ║
+// ║   a lighter one mirrored onto the MSI and the AOC.             ║
+// ╚═══════════════════════════════════════════════════════════════╝
+//
+// Why two definitions rather than one bar on all three outputs:
+// the system tray can only meaningfully live in one place. Running a
+// tray on all three duplicates every icon, and clicking the wrong copy
+// confuses some apps. So the tray, update counter and power button live
+// on the primary bar only.
+//
+// Reload:  SUPER+SHIFT+R   (or  pkill waybar && waybar & )
+
+[
+  // ─────────────────────────────────────────────────────────────
+  //  PRIMARY BAR — BenQ Zowie, the centre screen
+  //  Matched by "make model serial", NOT by connector name: DP-N
+  //  numbering shifts with GPU driver load order and silently breaks.
+  // ─────────────────────────────────────────────────────────────
+  {
+    "name": "waybar-primary",
+    "output": ["BNQ XL2566X+ EB3BS02348SL0"],
+    "layer": "top",
+    "position": "top",
+    "height": 38,
+    "spacing": 0,
+    "margin-top": 8,
+    "margin-left": 12,
+    "margin-right": 12,
+    "reload_style_on_change": true,
+
+    "modules-left": [
+      "custom/logo",
+      "hyprland/workspaces",
+      "hyprland/submap",
+      "hyprland/window"
+    ],
+    "modules-center": [
+      "clock"
+    ],
+    "modules-right": [
+      "custom/updates",
+      "custom/gpu",
+      "cpu",
+      "temperature",
+      "memory",
+      "disk",
+      "custom/mouse",
+      "pulseaudio",
+      "network",
+      "bluetooth",
+      "custom/notification",
+      "tray",
+      "custom/power"
+    ],
+
+    // ── Left ──────────────────────────────────────────────────
+    "custom/logo": {
+      "format": "󰣇",
+      "tooltip": true,
+      "tooltip-format": "Application launcher  ·  SUPER+Space",
+      "on-click": "pkill rofi || rofi -show drun",
+      "on-click-right": "pkill rofi || rofi -show window"
+    },
+
+    "hyprland/workspaces": {
+      // false = this bar only shows the workspaces belonging to ITS
+      // monitor. Combined with the monitor bindings in monitors.conf,
+      // the BenQ shows 1-3, the MSI 4-6 and the AOC 7-9.
+      "all-outputs": false,
+      "active-only": false,
+      "show-special": true,
+      "special-visible-only": true,
+      "on-click": "activate",
+      "on-scroll-up": "hyprctl dispatch workspace e+1",
+      "on-scroll-down": "hyprctl dispatch workspace e-1",
+      "format": "{name}"
+      // persistent-workspaces removed on purpose: Hyprland declares the
+      // workspaces persistent via workspace_rule, so they always exist and
+      // waybar simply reports them. That field keys on output NAMES (DP-N),
+      // the exact fragile identifier this setup avoids.
+    },
+
+    // Shows "resize" when you are in the SUPER+R resize submap, so you
+    // always know the keyboard is in a modal state.
+    "hyprland/submap": {
+      "format": "󰌌 {}",
+      "tooltip": false,
+      "max-length": 20
+    },
+
+    "hyprland/window": {
+      "format": "{}",
+      "max-length": 55,
+      "separate-outputs": true,
+      "rewrite": {
+        "(.*) — Mozilla Firefox": "󰈹  $1",
+        "(.*) - Google Chrome": "󰊯  $1",
+        "(.*) - Chromium": "󰊯  $1",
+        "(.*) - NVIM": "󰛤  $1",
+        "nvim (.*)": "󰛤  $1",
+        "(.*)@(.*):(.*)": "󰆍  $3",
+        "~": "󰋜  home",
+        "": "󰍹  Desktop"
+      }
+    },
+
+    // ── Centre ────────────────────────────────────────────────
+    "clock": {
+      "interval": 1,
+      "format": "󰥔  {:%H:%M:%S}",
+      "format-alt": "󰃭  {:%a %d %b %Y}",
+      "tooltip-format": "<span size='11000' font='JetBrainsMono Nerd Font'>{calendar}</span>",
+      "calendar": {
+        "mode": "month",
+        "mode-mon-col": 3,
+        "on-scroll": 1,
+        "format": {
+          "months":  "<span color='#cba6f7'><b>{}</b></span>",
+          "days":    "<span color='#cdd6f4'>{}</span>",
+          "weeks":   "<span color='#94e2d5'><b>W{}</b></span>",
+          "weekdays":"<span color='#f9e2af'><b>{}</b></span>",
+          "today":   "<span color='#f38ba8'><b><u>{}</u></b></span>"
+        }
+      },
+      "actions": {
+        "on-click-right": "mode",
+        "on-scroll-up": "shift_up",
+        "on-scroll-down": "shift_down"
+      }
+    },
+
+    // ── Right ─────────────────────────────────────────────────
+    "custom/updates": {
+      "exec": "~/.config/waybar/scripts/updates.sh",
+      "return-type": "json",
+      "interval": 1800,
+      "signal": 9,
+      "on-click": "ghostty -e yay -Syu",
+      "tooltip": true
+    },
+
+    "custom/gpu": {
+      "exec": "~/.config/waybar/scripts/gpu.sh",
+      "return-type": "json",
+      "interval": 3,
+      "tooltip": true,
+      "on-click": "ghostty -e nvidia-smi -l 1"
+    },
+
+    "cpu": {
+      "interval": 2,
+      "format": "󰻠  {usage}%",
+      "tooltip": true,
+      "on-click": "ghostty -e btop"
+    },
+
+    "temperature": {
+      // Stable device path, NOT /sys/class/hwmon/hwmonN — that number
+      // is assigned in probe order and moves between reboots.
+      // 0000:00:18.3 is the k10temp sensor on this Ryzen.
+      "hwmon-path-abs": "/sys/devices/pci0000:00/0000:00:18.3/hwmon",
+      "input-filename": "temp1_input",
+      "critical-threshold": 85,
+      "interval": 2,
+      "format": "󰔏  {temperatureC}°",
+      "format-critical": "󰸁  {temperatureC}°",
+      "tooltip-format": "CPU package (Tctl): {temperatureC}°C"
+    },
+
+    "memory": {
+      "interval": 3,
+      "format": "󰍛  {percentage}%",
+      "tooltip-format": "RAM  {used:0.1f}G / {total:0.1f}G\nSwap {swapUsed:0.1f}G / {swapTotal:0.1f}G",
+      "on-click": "ghostty -e btop"
+    },
+
+    "disk": {
+      "interval": 60,
+      "path": "/",
+      "format": "󰋊  {percentage_used}%",
+      "tooltip-format": "{used} used of {total}  ·  {free} free"
+    },
+
+    "custom/mouse": {
+      "exec": "~/.config/waybar/scripts/mouse-battery.sh",
+      "return-type": "json",
+      "interval": 120,
+      "tooltip": true
+    },
+
+    "pulseaudio": {
+      "format": "{icon}  {volume}%",
+      "format-muted": "󰝟  muted",
+      "format-bluetooth": "󰂯  {volume}%",
+      "format-bluetooth-muted": "󰂲  muted",
+      "format-icons": {
+        "headphone": "󰋋",
+        "headset": "󰋎",
+        "hdmi": "󰽟",
+        "default": ["󰕿", "󰖀", "󰕾"]
+      },
+      "scroll-step": 5,
+      "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+      "on-click-right": "pavucontrol",
+      "tooltip-format": "{desc}  ·  {volume}%"
+    },
+
+    "network": {
+      "interval": 3,
+      "format-ethernet": "󰈀  {bandwidthDownBits:>}",
+      "format-wifi": "󰖩  {signalStrength}%",
+      "format-linked": "󰈀  no IP",
+      "format-disconnected": "󰤭  offline",
+      "tooltip-format-ethernet": "{ifname}  ·  {ipaddr}/{cidr}\n󰇚 {bandwidthDownBits}   󰕒 {bandwidthUpBits}",
+      "tooltip-format-wifi": "{essid}  ({signalStrength}%)\n{ifname}  ·  {ipaddr}\n󰇚 {bandwidthDownBits}   󰕒 {bandwidthUpBits}",
+      "tooltip-format-disconnected": "No network connection",
+      "on-click": "nm-connection-editor"
+    },
+
+    "bluetooth": {
+      "format": "󰂯",
+      "format-disabled": "󰂲",
+      "format-off": "󰂲",
+      "format-connected": "󰂱  {num_connections}",
+      "tooltip-format": "{controller_alias}\n{status}",
+      "tooltip-format-connected": "{controller_alias}\n{device_enumerate}",
+      "tooltip-format-enumerate-connected": "{device_alias}",
+      "on-click": "blueman-manager"
+    },
+
+    "custom/notification": {
+      "tooltip": true,
+      "format": "{icon}",
+      "format-icons": {
+        "notification": "󰂚<span foreground='#f38ba8'><sup></sup></span>",
+        "none": "󰂚",
+        "dnd-notification": "󰂛<span foreground='#f38ba8'><sup></sup></span>",
+        "dnd-none": "󰂛",
+        "inhibited-notification": "󰂚<span foreground='#f38ba8'><sup></sup></span>",
+        "inhibited-none": "󰂚",
+        "dnd-inhibited-notification": "󰂛<span foreground='#f38ba8'><sup></sup></span>",
+        "dnd-inhibited-none": "󰂛"
+      },
+      "return-type": "json",
+      "exec": "swaync-client -swb",
+      "on-click": "swaync-client -t -sw",
+      "on-click-right": "swaync-client -d -sw",
+      "escape": true
+    },
+
+    "tray": {
+      "icon-size": 17,
+      "spacing": 12,
+      "show-passive-items": true
+    },
+
+    "custom/power": {
+      "format": "󰐥",
+      "tooltip": true,
+      "tooltip-format": "Session menu  ·  SUPER+SHIFT+Esc",
+      "on-click": "pkill wlogout || wlogout -b 5"
+    }
+  },
+
+  // ─────────────────────────────────────────────────────────────
+  //  SECONDARY BARS — MSI 4K and AOC (matched by description)
+  //  Same look, no tray / updates / power button.
+  // ─────────────────────────────────────────────────────────────
+  {
+    "name": "waybar-secondary",
+    "output": ["Microstep MPG321UX OLED 0x01010101", "AOC AG273F1G8R3 APML89A001062"],
+    "layer": "top",
+    "position": "top",
+    "height": 38,
+    "spacing": 0,
+    "margin-top": 8,
+    "margin-left": 12,
+    "margin-right": 12,
+    "reload_style_on_change": true,
+
+    "modules-left": [
+      "hyprland/workspaces",
+      "hyprland/submap",
+      "hyprland/window"
+    ],
+    "modules-center": [
+      "clock"
+    ],
+    "modules-right": [
+      "cpu",
+      "memory",
+      "pulseaudio",
+      "custom/notification"
+    ],
+
+    "hyprland/workspaces": {
+      "all-outputs": false,
+      "active-only": false,
+      "show-special": true,
+      "special-visible-only": true,
+      "on-click": "activate",
+      "on-scroll-up": "hyprctl dispatch workspace e+1",
+      "on-scroll-down": "hyprctl dispatch workspace e-1",
+      "format": "{name}"
+      // persistent-workspaces removed on purpose: Hyprland declares the
+      // workspaces persistent via workspace_rule, so they always exist and
+      // waybar simply reports them. That field keys on output NAMES (DP-N),
+      // the exact fragile identifier this setup avoids.
+    },
+
+    "hyprland/submap": {
+      "format": "󰌌 {}",
+      "tooltip": false,
+      "max-length": 20
+    },
+
+    "hyprland/window": {
+      "format": "{}",
+      "max-length": 60,
+      "separate-outputs": true,
+      "rewrite": {
+        "(.*) - Google Chrome": "󰊯  $1",
+        "(.*) - NVIM": "󰛤  $1",
+        "nvim (.*)": "󰛤  $1",
+        "(.*)@(.*):(.*)": "󰆍  $3",
+        "": "󰍹  Desktop"
+      }
+    },
+
+    "clock": {
+      "interval": 1,
+      "format": "󰥔  {:%H:%M}",
+      "format-alt": "󰃭  {:%a %d %b}",
+      "tooltip-format": "<span size='11000' font='JetBrainsMono Nerd Font'>{calendar}</span>",
+      "calendar": {
+        "mode": "month",
+        "format": {
+          "months":  "<span color='#cba6f7'><b>{}</b></span>",
+          "days":    "<span color='#cdd6f4'>{}</span>",
+          "weeks":   "<span color='#94e2d5'><b>W{}</b></span>",
+          "weekdays":"<span color='#f9e2af'><b>{}</b></span>",
+          "today":   "<span color='#f38ba8'><b><u>{}</u></b></span>"
+        }
+      }
+    },
+
+    "cpu": {
+      "interval": 2,
+      "format": "󰻠  {usage}%"
+    },
+
+    "memory": {
+      "interval": 3,
+      "format": "󰍛  {percentage}%"
+    },
+
+    "pulseaudio": {
+      "format": "{icon}  {volume}%",
+      "format-muted": "󰝟  muted",
+      "format-icons": {
+        "headphone": "󰋋",
+        "headset": "󰋎",
+        "default": ["󰕿", "󰖀", "󰕾"]
+      },
+      "scroll-step": 5,
+      "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+      "on-click-right": "pavucontrol"
+    },
+
+    "custom/notification": {
+      "tooltip": true,
+      "format": "{icon}",
+      "format-icons": {
+        "notification": "󰂚<span foreground='#f38ba8'><sup></sup></span>",
+        "none": "󰂚",
+        "dnd-notification": "󰂛<span foreground='#f38ba8'><sup></sup></span>",
+        "dnd-none": "󰂛",
+        "inhibited-notification": "󰂚<span foreground='#f38ba8'><sup></sup></span>",
+        "inhibited-none": "󰂚",
+        "dnd-inhibited-notification": "󰂛<span foreground='#f38ba8'><sup></sup></span>",
+        "dnd-inhibited-none": "󰂛"
+      },
+      "return-type": "json",
+      "exec": "swaync-client -swb",
+      "on-click": "swaync-client -t -sw",
+      "escape": true
+    }
+  }
+]

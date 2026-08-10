@@ -70,7 +70,16 @@ source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zs
 # ========================================
 eval "$(starship init zsh)"
 
-eval $(keychain --eval --quiet github-ssh-key azure-devops aariatech-server)
+# Only feed keychain the keys that actually exist in ~/.ssh.
+# Passing a missing key made every new shell print
+#   ! Warning: Can't find key "azure-devops"
+# Listing it here still works — the moment you drop the key in, it loads.
+_ssh_keys=()
+for _k in github-ssh-key azure-devops aariatech-server; do
+  [[ -f "$HOME/.ssh/$_k" ]] && _ssh_keys+=("$_k")
+done
+(( ${#_ssh_keys} )) && eval "$(keychain --eval --quiet "${_ssh_keys[@]}")"
+unset _ssh_keys _k
 
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -86,7 +95,9 @@ esac
 
 export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init - bash)"
+# was `pyenv init - bash` — this file is sourced by zsh, so pyenv was
+# emitting bash-flavoured init code (wrong completion + wrong hooks).
+eval "$(pyenv init - zsh)"
 
 # Load venv automatically using this script
 eval "$(pyenv virtualenv-init -)"

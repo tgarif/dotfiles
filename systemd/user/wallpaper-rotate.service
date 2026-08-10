@@ -1,0 +1,20 @@
+[Unit]
+Description=Rotate the desktop wallpaper
+Documentation=man:awww(1)
+
+# Only meaningful inside a running graphical session.
+After=graphical-session.target
+PartOf=graphical-session.target
+
+# Without this the timer would still fire on a TTY-only login, and
+# wallpaper.sh would helpfully start awww-daemon with no compositor to
+# draw on. WAYLAND_DISPLAY reaches the user manager because the Hyprland
+# autostart runs `systemctl --user import-environment`.
+ConditionEnvironment=WAYLAND_DISPLAY
+
+[Service]
+Type=oneshot
+ExecStart=%h/.config/hypr/scripts/wallpaper.sh random
+
+# Keep journal noise down; the script is silent on success anyway.
+StandardOutput=null

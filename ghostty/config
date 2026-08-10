@@ -1,0 +1,135 @@
+#  ╔═══════════════════════════════════════════════════════════════╗
+#  ║                        G H O S T T Y                          ║
+#  ╚═══════════════════════════════════════════════════════════════╝
+#
+#  Reload in place:  ctrl+shift+,
+#  Full key list:    ghostty +list-keybinds
+#  Check what it read: ghostty +show-config
+
+#  ── THEME ───────────────────────────────────────────────────────
+#  Built into Ghostty, so it stays correct across updates. Matches the
+#  Catppuccin Mocha used by tmux, nvim, waybar and rofi.
+theme = "Catppuccin Mocha"
+
+#  Background is translucent; Hyprland's blur turns it into frosted
+#  glass. Doing it HERE rather than with a Hyprland opacity rule is
+#  deliberate — this fades only the background and leaves glyphs fully
+#  opaque, whereas a compositor rule dims the text along with it.
+background-opacity = 0.90
+background-blur = true
+
+#  Correct compositing for translucent backgrounds
+alpha-blending = linear-corrected
+
+
+#  ── FONT ────────────────────────────────────────────────────────
+#  Nerd Font variant so starship, tmux and nvim glyphs all resolve
+#  without a fallback font.
+font-family = JetBrainsMono Nerd Font
+font-size = 12
+
+#  Programming ligatures: -> becomes an arrow, != a proper not-equal.
+#  Comment these two out if you would rather see the raw characters.
+font-feature = calt
+font-feature = liga
+
+#  Disambiguate zero from capital O, and use a slashed zero
+font-feature = zero
+font-feature = ss19
+
+#  A touch of extra line spacing — much easier on the eyes in a long
+#  nvim session than the default tight leading.
+adjust-cell-height = 12%
+
+#  Slightly heavier stems. Wayland has no subpixel AA, so this brings
+#  back some of the weight you lose versus X11.
+font-thicken = true
+
+
+#  ── WINDOW ──────────────────────────────────────────────────────
+#  Hyprland draws the border and does the tiling, so Ghostty must not
+#  draw a titlebar of its own.
+window-decoration = none
+window-padding-x = 12
+window-padding-y = 8
+
+#  Keep padding even when the cell grid does not divide evenly, so the
+#  terminal never looks off-centre.
+window-padding-balance = true
+
+#  Follow the system dark preference
+window-theme = ghostty
+
+#  No "80x24" popup every time Hyprland retiles a window — with three
+#  monitors and a tiling WM this fires constantly.
+resize-overlay = never
+
+#  Do not restore old sessions into a fresh tiled window
+window-save-state = never
+
+#  One process for all windows: much faster new-window, less RAM.
+gtk-single-instance = true
+
+
+#  ── SCROLLBACK & CLIPBOARD ──────────────────────────────────────
+#  100 MB. Generous on purpose — enough to scroll back through a long
+#  build log or test run without losing the start of it.
+scrollback-limit = 104857600
+
+#  Selecting text copies to the clipboard, like a terminal should.
+copy-on-select = clipboard
+
+#  Let programs read/write the clipboard (osc52) — this is what makes
+#  yanking inside nvim over SSH land on the local clipboard.
+clipboard-read = allow
+clipboard-write = allow
+
+#  Ctrl+click to open URLs
+link-url = true
+
+
+#  ── CURSOR ──────────────────────────────────────────────────────
+cursor-style = block
+cursor-style-blink = false
+mouse-hide-while-typing = true
+
+
+#  ── SHELL INTEGRATION ───────────────────────────────────────────
+#  Detected automatically, but pinned to zsh since that is the login
+#  shell. Gives working cwd tracking (new windows open in the same
+#  directory), correct window titles, and sudo keeping the terminfo.
+shell-integration = zsh
+shell-integration-features = cursor,sudo,title
+
+
+#  ── KEYBINDS ────────────────────────────────────────────────────
+#  Deliberately sparse. tmux owns the prefix (Ctrl+A) and handles all
+#  splits and tabs, so Ghostty stays out of the way — no binding here
+#  may shadow something tmux or nvim needs.
+
+keybind = ctrl+shift+comma=reload_config
+keybind = ctrl+plus=increase_font_size:1
+keybind = ctrl+minus=decrease_font_size:1
+keybind = ctrl+zero=reset_font_size
+
+#  Scrollback without reaching for the mouse
+keybind = ctrl+shift+page_up=scroll_page_up
+keybind = ctrl+shift+page_down=scroll_page_down
+keybind = ctrl+shift+home=scroll_to_top
+keybind = ctrl+shift+end=scroll_to_bottom
+
+#  Clear screen AND scrollback
+keybind = ctrl+shift+k=clear_screen
+
+#  Dump the scrollback into nvim — genuinely useful for grepping a
+#  build log you have already scrolled past.
+keybind = ctrl+shift+j=write_scrollback_file:open
+
+
+#  ── MISC ────────────────────────────────────────────────────────
+#  No "are you sure" when a shell has exited cleanly; still asks if a
+#  command is actually running.
+confirm-close-surface = false
+
+#  Dim inactive splits a little (harmless if you only use tmux)
+unfocused-split-opacity = 0.92

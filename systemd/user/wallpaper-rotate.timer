@@ -1,0 +1,21 @@
+[Unit]
+Description=Rotate the desktop wallpaper on a schedule
+
+[Timer]
+# First rotation 15 min after the timer starts, then every 15 min.
+#
+# To change the interval, edit BOTH lines below, then:
+#   systemctl --user daemon-reload
+#   systemctl --user restart wallpaper-rotate.timer
+OnActiveSec=15min
+OnUnitActiveSec=15min
+
+# Do not wake the machine precisely for a wallpaper; let systemd batch it.
+AccuracySec=1min
+
+# If the machine was asleep past a scheduled run, do not fire a burst of
+# catch-up rotations on resume — just carry on with the next interval.
+Persistent=false
+
+[Install]
+WantedBy=timers.target

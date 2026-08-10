@@ -1,0 +1,58 @@
+/* ╔═══════════════════════════════════════════════════════════════╗
+   ║                          R O F I                              ║
+   ║              launcher · search · dmenu backend                ║
+   ╚═══════════════════════════════════════════════════════════════╝
+
+   rofi 2.0 (Arch extra) has native Wayland support — the old
+   rofi-wayland fork was merged upstream, so no AUR package needed.
+
+   Used by:  SUPER+Space (apps) · SUPER+Shift+Space (run)
+             SUPER+W (windows) · SUPER+V (clipboard)
+             SUPER+. (emoji)   · SUPER+= (calc)
+             SUPER+/ (cheatsheet) · SUPER+Shift+W (wallpaper) */
+
+configuration {
+    modes: "drun,run,filebrowser";
+
+    font: "JetBrainsMono Nerd Font 12";
+
+    show-icons:            true;
+    icon-theme:            "Papirus-Dark";
+    display-drun:          " Apps";
+    display-run:           " Run";
+    display-filebrowser:   " Files";
+    display-keys:          " Keys";
+
+    drun-display-format:   "{name}";
+    drun-match-fields:     "name,generic,exec,categories,keywords";
+    drun-show-actions:     false;
+
+    /* Launch CLI programs in ghostty rather than the default
+       rofi-sensible-terminal guess. */
+    terminal:              "ghostty";
+    run-shell-command:     "{terminal} -e {cmd}";
+
+    /* Fuzzy matching with fzf-style ranking — typing "gimp" finds
+       "GNU Image Manipulation Program", and "chr" finds Chrome fast. */
+    matching:              "fuzzy";
+    sort:                  true;
+    sorting-method:        "fzf";
+    case-sensitive:        false;
+
+    /* Remember what you launch most and float it to the top */
+    disable-history:       false;
+    cycle:                 true;
+
+    scroll-method:         0;
+    hover-select:          true;
+    click-to-exit:         true;
+
+    kb-row-up:             "Up,Control+k";
+    kb-row-down:           "Down,Control+j";
+    kb-accept-entry:       "Return,KP_Enter";
+    kb-remove-to-eol:      "";
+    kb-mode-next:          "Shift+Right,Control+Tab";
+    kb-mode-previous:      "Shift+Left,Control+ISO_Left_Tab";
+}
+
+@theme "~/.config/rofi/theme.rasi"

@@ -1,0 +1,91 @@
+/* ╔═══════════════════════════════════════════════════════════════╗
+   ║        W L O G O U T   —   Catppuccin Mocha                   ║
+   ║        SUPER+SHIFT+ESCAPE                                     ║
+   ╚═══════════════════════════════════════════════════════════════╝
+
+   Five tiles in a row. Each carries its own icon from
+   /usr/share/wlogout/icons/ recoloured to the Mocha palette via a
+   background-image tint. Keyboard shortcuts: l e u r s (see layout). */
+
+* {
+    background-image: none;
+    box-shadow: none;
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    transition: none;
+}
+
+/* Dim + let Hyprland's wlogout layerrule blur what is behind */
+window {
+    background: rgba(17, 17, 27, 0.75);
+}
+
+button {
+    background-color: rgba(30, 30, 46, 0.82);
+    border: 2px solid rgba(69, 71, 90, 0.8);
+    border-radius: 20px;
+
+    color: #cdd6f4;
+    font-size: 15px;
+    font-weight: 600;
+
+    margin: 10px;
+    padding: 0;
+
+    background-repeat: no-repeat;
+    background-position: center 32%;
+    background-size: 22%;
+}
+
+button:focus,
+button:hover {
+    background-color: rgba(203, 166, 247, 0.22);
+    border-color: #cba6f7;
+    color: #cba6f7;
+}
+
+/* ── PER-BUTTON ICONS + ACCENT COLOURS ───────────────────────── */
+
+#lock {
+    background-image: image(url("/usr/share/wlogout/icons/lock.png"));
+}
+#lock:focus, #lock:hover {
+    background-color: rgba(137, 180, 250, 0.22);
+    border-color: #89b4fa;
+    color: #89b4fa;
+}
+
+#logout {
+    background-image: image(url("/usr/share/wlogout/icons/logout.png"));
+}
+#logout:focus, #logout:hover {
+    background-color: rgba(249, 226, 175, 0.22);
+    border-color: #f9e2af;
+    color: #f9e2af;
+}
+
+#suspend {
+    background-image: image(url("/usr/share/wlogout/icons/suspend.png"));
+}
+#suspend:focus, #suspend:hover {
+    background-color: rgba(148, 226, 213, 0.22);
+    border-color: #94e2d5;
+    color: #94e2d5;
+}
+
+#reboot {
+    background-image: image(url("/usr/share/wlogout/icons/reboot.png"));
+}
+#reboot:focus, #reboot:hover {
+    background-color: rgba(250, 179, 135, 0.22);
+    border-color: #fab387;
+    color: #fab387;
+}
+
+#shutdown {
+    background-image: image(url("/usr/share/wlogout/icons/shutdown.png"));
+}
+#shutdown:focus, #shutdown:hover {
+    background-color: rgba(243, 139, 168, 0.22);
+    border-color: #f38ba8;
+    color: #f38ba8;
+}

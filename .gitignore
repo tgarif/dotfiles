@@ -1,0 +1,21 @@
+# ── local-only state, not configuration ──────────────────────────
+
+# Superseded Hyprland .conf setup, kept on disk purely as a local
+# rollback for scripts/restore-conf.sh. Obsolete once Hyprland 0.57
+# removes .conf support entirely, so not worth versioning.
+hypr/conf.bak/
+hypr/hyprland.lua.parked-*
+
+# GTK4 theme files are symlinks into /usr/share/themes/… created by
+# hand. They point at an absolute path that only exists once
+# catppuccin-gtk-theme-mocha is installed, so committing them would
+# just produce dangling links on a fresh machine. settings.ini IS
+# tracked — that's the actual configuration.
+gtk-4.0/gtk.css
+gtk-4.0/gtk-dark.css
+gtk-4.0/assets
+
+# Editor / OS noise
+*.bak
+*.swp
+.DS_Store
