@@ -611,6 +611,8 @@ bind(MOD .. " + SHIFT + R",      sh(S .. "/reload.sh"),                  "Reload
 bind(MOD .. " + N",              sh("swaync-client -t -sw"),             "Notification centre")
 bind(MOD .. " + SHIFT + D",      sh("swaync-client -d -sw"),             "Toggle do-not-disturb")
 bind(MOD .. " + SHIFT + W",      sh(S .. "/wallpaper.sh"),               "Change wallpaper")
+bind(MOD .. " + A",              sh(S .. "/audio.sh toggle"),            "Toggle audio: headset <-> Elgato XLR")
+bind(MOD .. " + SHIFT + A",      sh(S .. "/audio.sh list"),              "List audio devices")
 bind(MOD .. " + ALT + G",        sh(S .. "/gamemode.sh"),                "Toggle game mode (effects off)")
 
 -- ── Media & hardware keys ──
