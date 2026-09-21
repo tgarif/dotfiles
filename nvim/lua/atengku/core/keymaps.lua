@@ -17,9 +17,7 @@ keymap.set("n", "<leader>v", "<C-v>") -- remap for wsl specific ctrl + v to past
 -- keymap.set("n", "<S-f>d", ":FormatDisable<CR>")
 
 -- This is to save without formatting
-keymap.set("n", "<S-f>d", ":noa w<CR>")
-
-keymap.set("n", "<leader>mk", ":MarkdownPreviewToggle<CR>") -- toggle markdown
+keymap.set("n", "<leader>wn", "<cmd>noautocmd write<CR>", { desc = "Write without formatting" })
 
 -- keymap.set("n", "x", '"_x')
 

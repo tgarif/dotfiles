@@ -6,6 +6,7 @@ return {
 
     lint.linters_by_ft = {
       python = { "ruff" },
+      gdscript = { "gdlint" },
       -- javascript = { "eslint_d" },
       -- typescript = { "eslint_d" },
       -- typescriptreact = { "eslint_d" },
@@ -16,7 +17,7 @@ return {
     local function file_in_cwd(file_name)
       return vim.fs.find(file_name, {
         upward = true,
-        stop = vim.loop.cwd():match("(.+)/"),
+        stop = vim.uv.cwd():match("(.+)/"),
         path = vim.fs.dirname(vim.api.nvim_buf_get_name(0)),
         type = "file",
       })[1]
@@ -64,7 +65,7 @@ return {
       end,
     })
 
-    vim.keymap.set("n", "<leader>l", function()
+    vim.keymap.set("n", "<leader>ll", function()
       try_linting()
     end, { desc = "Trigger linting for current file" })
   end,

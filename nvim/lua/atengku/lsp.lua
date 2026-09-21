@@ -26,7 +26,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection
 
     opts.desc = "Smart rename"
-    keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts) -- smart rename
+    keymap.set("n", "<leader>cr", vim.lsp.buf.rename, opts) -- smart rename
 
     opts.desc = "Show buffer diagnostics"
     keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts) -- show  diagnostics for file
@@ -48,9 +48,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
     keymap.set("n", "K", vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
 
     opts.desc = "Restart LSP"
-    keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
+    keymap.set("n", "<leader>cR", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
   end,
 })
+
+-- Godot's built-in GDScript language server (127.0.0.1:6005, only while the Godot editor is open)
+vim.lsp.enable("gdscript")
 
 -- vim.lsp.inlay_hint.enable(true)
 

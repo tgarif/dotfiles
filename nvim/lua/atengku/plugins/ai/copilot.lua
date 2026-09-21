@@ -13,6 +13,7 @@ return {
     filetypes = {
       markdown = true,
       help = true,
+      gdscript = false, -- learning Godot: write it yourself (see ~/workspaces/games/docs D-003)
     },
   },
 }

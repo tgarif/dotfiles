@@ -1,6 +1,6 @@
 return {
   {
-    "williamboman/mason-lspconfig.nvim",
+    "mason-org/mason-lspconfig.nvim",
     opts = {
       -- list of servers for mason to install
       ensure_installed = {
@@ -16,12 +16,11 @@ return {
         "eslint",
         "docker_compose_language_service",
         "dockerls",
-        "pylsp",
       },
     },
     dependencies = {
       {
-        "williamboman/mason.nvim",
+        "mason-org/mason.nvim",
         opts = {
           ui = {
             icons = {
@@ -49,10 +48,11 @@ return {
         "gofumpt",
         "goimports",
         "golines",
+        "gdtoolkit", -- gdscript formatter + linter (gdformat, gdlint)
       },
     },
     dependencies = {
-      "williamboman/mason.nvim",
+      "mason-org/mason.nvim",
     },
   },
 }

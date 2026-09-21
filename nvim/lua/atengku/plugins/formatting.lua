@@ -6,11 +6,6 @@ return {
     local conform = require("conform")
 
     conform.setup({
-      root_dir = require("conform.util").root_file({
-        ".editorconfig",
-        "package.json",
-        ".git",
-      }),
       formatters_by_ft = {
         javascript = { "prettier" },
         typescript = { "prettier" },
@@ -25,6 +20,7 @@ return {
         lua = { "stylua" },
         go = { "gofmt" },
         python = { "black" },
+        gdscript = { "gdformat" },
         -- c = { "clang-format" },
       },
       format_on_save = function(bufnr)
@@ -33,7 +29,7 @@ return {
           return
         end
         return {
-          lsp_fallback = true,
+          lsp_format = "fallback",
           async = false,
           timeout_ms = 1000,
         }
@@ -79,7 +75,7 @@ return {
 
     vim.keymap.set({ "n", "v" }, "<leader>mp", function()
       conform.format({
-        lsp_fallback = true,
+        lsp_format = "fallback",
         async = false,
         timeout_ms = 1000,
       })
